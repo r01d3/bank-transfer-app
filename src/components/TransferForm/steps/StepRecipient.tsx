@@ -16,8 +16,11 @@ const StepRecipient = ({
       <h2 className="transfer-form__title">Transfer Details</h2>
 
       <div className="transfer-form__field">
-        <label className="transfer-form__label">Your IBAN</label>
+        <label className="transfer-form__label" htmlFor="fromIban">
+          Your IBAN
+        </label>
         <input
+          id="fromIban"
           className={`transfer-form__input${
             errors.fromIban ? " transfer-form__input--error" : ""
           }`}
@@ -33,8 +36,11 @@ const StepRecipient = ({
       </div>
 
       <div className="transfer-form__field">
-        <label className="transfer-form__label">Recipient Name</label>
+        <label className="transfer-form__label" htmlFor="recipientName">
+          Recipient Name
+        </label>
         <input
+          id="recipientName"
           className={`transfer-form__input${
             errors.recipientName ? " transfer-form__input--error" : ""
           }`}
@@ -50,8 +56,11 @@ const StepRecipient = ({
       </div>
 
       <div className="transfer-form__field">
-        <label className="transfer-form__label">Recipient IBAN</label>
+        <label className="transfer-form__label" htmlFor="toIban">
+          Recipient IBAN
+        </label>
         <input
+          id="toIban"
           className={`transfer-form__input${
             errors.toIban ? " transfer-form__input--error" : ""
           }`}
@@ -67,8 +76,11 @@ const StepRecipient = ({
       </div>
 
       <div className="transfer-form__field">
-        <label className="transfer-form__label">Recipient Bank</label>
+        <label className="transfer-form__label" htmlFor="bank">
+          Recipient Bank
+        </label>
         <input
+          id="bank"
           className={`transfer-form__input${
             errors.bank ? " transfer-form__input--error" : ""
           }`}

@@ -14,8 +14,11 @@ const StepAmount = ({ formData, errors, onChange }: StepAmountPropsType) => {
       <h2 className="transfer-form__title">Transfer Amount</h2>
 
       <div className="transfer-form__field">
-        <label className="transfer-form__label">Amount</label>
+        <label className="transfer-form__label" htmlFor="amount">
+          Amount
+        </label>
         <input
+          id="amount"
           className={`transfer-form__input${
             errors.amount ? " transfer-form__input--error" : ""
           }`}
@@ -32,9 +35,12 @@ const StepAmount = ({ formData, errors, onChange }: StepAmountPropsType) => {
       </div>
 
       <div className="transfer-form__field">
-        <label className="transfer-form__label">Currency</label>
+        <label className="transfer-form__label" htmlFor="currency">
+          Currency
+        </label>
         <div className="transfer-form__select-wrapper">
           <select
+            id="currency"
             className={`transfer-form__input transfer-form__input--select${
               errors.currency ? " transfer-form__input--error" : ""
             }`}
@@ -54,11 +60,12 @@ const StepAmount = ({ formData, errors, onChange }: StepAmountPropsType) => {
       </div>
 
       <div className="transfer-form__field">
-        <label className="transfer-form__label">
+        <label className="transfer-form__label" htmlFor="description">
           Description{" "}
           <span className="transfer-form__optional">(optional)</span>
         </label>
         <input
+          id="description"
           className="transfer-form__input"
           type="text"
           name="description"
