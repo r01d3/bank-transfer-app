@@ -83,4 +83,19 @@ describe("StepConfirm", () => {
       expect(screen.getByText("Invoice #123")).toBeInTheDocument();
     });
   });
+
+  describe("Integration", () => {
+    it("calls onChange when checkbox is clicked", async () => {
+      const user = userEvent.setup();
+      const handleChange = vi.fn();
+
+      render(
+        <StepConfirm formData={baseData} errors={{}} onChange={handleChange} />
+      );
+
+      await user.click(screen.getByRole("checkbox"));
+
+      expect(handleChange).toHaveBeenCalled();
+    });
+  });
 });

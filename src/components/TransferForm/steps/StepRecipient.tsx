@@ -28,7 +28,7 @@ const StepRecipient = ({
           name="fromIban"
           value={formData.fromIban}
           onChange={onChange}
-          placeholder="RO49AAAA1B31007593840000"
+          placeholder="Your IBAN e.g. RO49AAAA1B31007593840000"
         />
         {errors.fromIban && (
           <span className="transfer-form__error">{errors.fromIban}</span>
@@ -68,7 +68,7 @@ const StepRecipient = ({
           name="toIban"
           value={formData.toIban}
           onChange={onChange}
-          placeholder="RO49AAAA1B31007593840000"
+          placeholder="Recipient IBAN e.g. RO49AAAA1B31007593840001"
         />
         {errors.toIban && (
           <span className="transfer-form__error">{errors.toIban}</span>

@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import StepAmount from "./StepAmount";
 import type { TransferFormDataType, FormErrorsType } from "../../../types";
+import userEvent from "@testing-library/user-event";
 
 const baseData: TransferFormDataType = {
   fromIban: "",
@@ -75,6 +76,46 @@ describe("StepAmount", () => {
     it("shows optional label for description", () => {
       render(<StepAmount formData={baseData} errors={{}} onChange={vi.fn()} />);
       expect(screen.getByText("(optional)")).toBeInTheDocument();
+    });
+  });
+
+  describe("Integration", () => {
+    it("calls onChange when user types amount", async () => {
+      const user = userEvent.setup();
+      const handleChange = vi.fn();
+
+      render(
+        <StepAmount formData={baseData} errors={{}} onChange={handleChange} />
+      );
+
+      await user.type(screen.getByLabelText("Amount"), "100");
+
+      expect(handleChange).toHaveBeenCalled();
+    });
+
+    it("calls onChange when user changes currency", async () => {
+      const user = userEvent.setup();
+      const handleChange = vi.fn();
+
+      render(
+        <StepAmount formData={baseData} errors={{}} onChange={handleChange} />
+      );
+
+      await user.selectOptions(screen.getByRole("combobox"), "EUR");
+
+      expect(handleChange).toHaveBeenCalled();
+    });
+
+    it("applies error class to amount input when error exists", () => {
+      const errors: FormErrorsType = { amount: "Amount is required" };
+
+      render(
+        <StepAmount formData={baseData} errors={errors} onChange={vi.fn()} />
+      );
+
+      expect(screen.getByLabelText("Amount")).toHaveClass(
+        "transfer-form__input--error"
+      );
     });
   });
 });

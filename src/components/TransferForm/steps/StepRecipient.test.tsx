@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import StepRecipient from "./StepRecipient";
 import type { TransferFormDataType, FormErrorsType } from "../../../types";
+import userEvent from "@testing-library/user-event";
 
 const baseData: TransferFormDataType = {
   fromIban: "",
@@ -80,6 +81,36 @@ describe("StepRecipient", () => {
 
       expect(screen.getByDisplayValue("John Doe")).toBeInTheDocument();
       expect(screen.getByDisplayValue("BCR")).toBeInTheDocument();
+    });
+  });
+
+  describe("Integration ", () => {
+    it("calls onChange when user types in a field", async () => {
+      const user = userEvent.setup();
+      const handleChange = vi.fn();
+
+      render(
+        <StepRecipient
+          formData={baseData}
+          errors={{}}
+          onChange={handleChange}
+        />
+      );
+
+      await user.type(screen.getByLabelText("Recipient Name"), "John");
+
+      expect(handleChange).toHaveBeenCalled();
+    });
+
+    it("applies error class to input when error exists", () => {
+      const errors: FormErrorsType = { fromIban: "Your IBAN is required" };
+
+      render(
+        <StepRecipient formData={baseData} errors={errors} onChange={vi.fn()} />
+      );
+
+      const input = screen.getByLabelText("Your IBAN");
+      expect(input).toHaveClass("transfer-form__input--error");
     });
   });
 });
