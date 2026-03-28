@@ -1,73 +1,131 @@
-# React + TypeScript + Vite
+# 💸 Bank Transfer App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React + TypeScript multi-step bank transfer form built with validation.
 
-Currently, two official plugins are available:
+## Preview
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+![Bank Transfer App](./Screenshot.png)
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- [React 18](https://react.dev/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Vite](https://vitejs.dev/)
+- [SASS / SCSS](https://sass-lang.com/)
 
-## Expanding the ESLint configuration
+## Features
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- 3-step form flow: **Recipient → Amount → Confirm**
+- Validation with `useState` — no external validation libraries
+- IBAN format validation with regex
+- Prevents transfers to the same IBAN
+- Per-field error messages that clear as the user types
+- Step-by-step validation — only validates fields in the current step
+- Transfer summary on the confirm step
+- Success screen after submission
+- Fully responsive, centered layout
+- Neo-banking dark gradient UI with SCSS BEM
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Project Structure
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```
+src/
+├── components/
+│   └── TransferForm/
+│       ├── TransferForm.tsx       # Main form component — handles state, validation, navigation
+│       ├── TransferForm.scss      # All styles using BEM methodology
+│       └── steps/
+│           ├── StepRecipient.tsx  # Step 1: from IBAN, recipient name, to IBAN, bank
+│           ├── StepAmount.tsx     # Step 2: amount, currency, description
+│           └── StepConfirm.tsx    # Step 3: summary + agree checkbox
+├── types/
+│   └── index.ts                # TransferFormData and FormErrors interfaces
+├── utils/
+│   └── validate.ts                # Validation functions per step
+├── App.tsx
+├── App.scss
+└── main.tsx
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Form Steps
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Step 1 — Recipient Details
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- **Your IBAN** — validated against IBAN regex format
+- **Recipient Name** — minimum 3 characters
+- **Recipient IBAN** — validated format, cannot match your own IBAN
+- **Recipient Bank** — required field
+
+### Step 2 — Transfer Amount
+
+- **Amount** — number between 1 and 50,000
+- **Currency** — RON, EUR, or USD
+- **Description** — optional
+
+### Step 3 — Confirm
+
+- Full transfer summary displayed
+- Checkbox confirmation required before submitting
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 18+
+- npm
+
+### Installation and run in development
+
+```bash
+npm install
+npm run dev
+```
+
+Open [http://localhost:5173](http://localhost:5173) in your browser.
+
+### Build for production
+
+```bash
+npm run build
+```
+
+## How Validation Works
+
+Validation is done with `useState` — no external libraries
+
+Each step has its own validation function in `src/utils/validate.ts`:
+
+```typescript
+export function validateStep1(data: TransferFormData): FormErrors {
+  const errors: FormErrors = {};
+
+  if (!data.fromIban.trim()) {
+    errors.fromIban = "Your IBAN is required";
+  } else if (!ibanRegex.test(data.fromIban.trim())) {
+    errors.fromIban = "Invalid IBAN format";
+  }
+
+  // ...more validations
+
+  return errors;
+}
+```
+
+When the user clicks **Next**, only the fields in the current step are validated. Errors are cleared field by field as the user types.
+
+## SCSS BEM Structure
+
+All styles follow the BEM (Block Element Modifier) methodology:
+
+```scss
+.transfer-form {
+} // Block
+.transfer-form__field {
+} // Element
+.transfer-form__input {
+} // Element
+.transfer-form__input--error {
+} // Modifier
+.transfer-form__btn--next {
+} // Modifier
 ```
