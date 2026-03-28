@@ -4,7 +4,7 @@ A React + TypeScript multi-step bank transfer form built with validation.
 
 ## Preview
 
-![Bank Transfer App](./Screenshot.png)
+![Bank Transfer App](./screenshot.png)
 
 ## Tech Stack
 
@@ -12,11 +12,13 @@ A React + TypeScript multi-step bank transfer form built with validation.
 - [TypeScript](https://www.typescriptlang.org/)
 - [Vite](https://vitejs.dev/)
 - [SASS / SCSS](https://sass-lang.com/)
+- [Vitest](https://vitest.dev/)
+- [React Testing Library](https://testing-library.com/)
 
 ## Features
 
 - 3-step form flow: **Recipient → Amount → Confirm**
-- Validation with `useState` — no external validation libraries
+- Validation for form
 - IBAN format validation with regex
 - Prevents transfers to the same IBAN
 - Per-field error messages that clear as the user types
@@ -32,16 +34,21 @@ A React + TypeScript multi-step bank transfer form built with validation.
 src/
 ├── components/
 │   └── TransferForm/
-│       ├── TransferForm.tsx       # Main form component — handles state, validation, navigation
-│       ├── TransferForm.scss      # All styles using BEM methodology
+│       ├── TransferForm.tsx           # Main form component — handles state, validation, navigation
+│       ├── TransferForm.scss          # All styles using BEM methodology
+│       ├── TransferForm.test.tsx      # Unit + integration tests
 │       └── steps/
-│           ├── StepRecipient.tsx  # Step 1: from IBAN, recipient name, to IBAN, bank
-│           ├── StepAmount.tsx     # Step 2: amount, currency, description
-│           └── StepConfirm.tsx    # Step 3: summary + agree checkbox
+│           ├── StepRecipient.tsx      # Step 1: from IBAN, recipient name, to IBAN, bank
+│           ├── StepRecipient.test.tsx
+│           ├── StepAmount.tsx         # Step 2: amount, currency, description
+│           ├── StepAmount.test.tsx
+│           ├── StepConfirm.tsx        # Step 3: summary + agree checkbox
+│           └── StepConfirm.test.tsx
 ├── types/
-│   └── index.ts                # TransferFormData and FormErrors interfaces
+│   └── transfer.ts                    # TransferFormData and FormErrors interfaces
 ├── utils/
-│   └── validate.ts                # Validation functions per step
+│   ├── validate.ts                    # Validation functions per step
+│   └── validate.test.ts
 ├── App.tsx
 ├── App.scss
 └── main.tsx
@@ -74,7 +81,7 @@ src/
 - Node.js 18+
 - npm
 
-### Installation and run in development
+### Installation & run in development
 
 ```bash
 npm install
@@ -89,9 +96,34 @@ Open [http://localhost:5173](http://localhost:5173) in your browser.
 npm run build
 ```
 
-## How Validation Works
+## Tests
 
-Validation is done with `useState` — no external libraries
+![Tests](./tests.png)
+
+**47 tests across 5 test files — all passing.**
+
+Tests are written with Vitest + React Testing Library and are split into:
+
+- **Unit tests** — isolated component rendering, props, error display
+- **Integration tests** — full user flows, navigation between steps, form submission
+
+### Run tests
+
+```bash
+npm run test
+```
+
+### Test files
+
+| File                     | Tests |
+| ------------------------ | ----- |
+| `utils/validate.test.ts` | 13    |
+| `TransferForm.test.tsx`  | 9     |
+| `StepRecipient.test.tsx` | 7     |
+| `StepAmount.test.tsx`    | 10    |
+| `StepConfirm.test.tsx`   | 8     |
+
+## How Validation Works
 
 Each step has its own validation function in `src/utils/validate.ts`:
 
@@ -117,15 +149,40 @@ When the user clicks **Next**, only the fields in the current step are validated
 
 All styles follow the BEM (Block Element Modifier) methodology:
 
+**Final classes:**
+
 ```scss
 .transfer-form {
-} // Block
+} /* Block */
 .transfer-form__field {
-} // Element
+} /* Element */
 .transfer-form__input {
-} // Element
+} /* Element */
 .transfer-form__input--error {
-} // Modifier
+} /* Modifier */
 .transfer-form__btn--next {
-} // Modifier
+} /* Modifier */
+```
+
+**SCSS nesting:**
+
+```scss
+.transfer-form {
+  &__field {
+  }
+
+  &__input {
+    &--error {
+    }
+  }
+
+  &__btn {
+    &--next {
+    }
+    &--back {
+    }
+    &--submit {
+    }
+  }
+}
 ```
